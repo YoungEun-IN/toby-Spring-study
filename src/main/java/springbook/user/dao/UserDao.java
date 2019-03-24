@@ -10,9 +10,7 @@ import springbook.user.domain.User;
 
 public class UserDao {
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3307/shopdb?characterEncoding=UTF-8", "root",
-                "1234");
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)");
@@ -28,9 +26,7 @@ public class UserDao {
 
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3307/shopdb?characterEncoding=UTF-8", "root",
-                "1234");
+        Connection c = getConnection();
         PreparedStatement ps = c
                 .prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
@@ -49,11 +45,20 @@ public class UserDao {
         return user;
     }
 
+
+    private Connection getConnection() throws ClassNotFoundException,
+            SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3307/shopdb?characterEncoding=UTF-8", "root",
+                "1234");
+        return c;
+    }
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         UserDao dao = new UserDao();
 
         User user = new User();
-        user.setId("whiteship3");
+        user.setId("whiteship4");
         user.setName("백기선");
         user.setPassword("married");
 
