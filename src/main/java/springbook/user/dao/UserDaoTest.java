@@ -1,15 +1,18 @@
 package springbook.user.dao;
 
-import springbook.user.domain.User;
-
 import java.sql.SQLException;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import springbook.user.domain.User;
 
 public class UserDaoTest {
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		UserDao dao = new UserDaoFactory().userDao();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(UserDaoFactory.class);
+		UserDao dao = context.getBean("userDao", UserDao.class);
 
 		User user = new User();
-		user.setId("whiteship8");
+		user.setId("whiteship9");
 		user.setName("¹é±â¼±");
 		user.setPassword("married");
 
