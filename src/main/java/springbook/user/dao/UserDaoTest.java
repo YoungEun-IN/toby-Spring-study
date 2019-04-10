@@ -6,11 +6,12 @@ import static org.junit.Assert.assertThat;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,9 +24,9 @@ import springbook.user.domain.User;
 @ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 	@Autowired
-	ApplicationContext context;
-
-	private UserDao dao;
+	UserDao dao;
+	@Autowired
+	DataSource dataSource;
 
 	private User user1;
 	private User user2;
@@ -33,12 +34,9 @@ public class UserDaoTest {
 
 	@Before
 	public void setUp() {
-		this.dao = this.context.getBean("userDao", UserDao.class);
-
-		this.user1 = new User("gyumee", "ë°•ì„±ì² ", "springno1", Level.BASIC, 1, 0);
-		this.user2 = new User("leegw700", "ì´ê¸¸ì›", "springno2", Level.SILVER, 55, 10);
-		this.user3 = new User("bumjin", "ë°•ë²”ì§„", "springno3", Level.GOLD, 100, 40);
-
+		this.user1 = new User("gyumee", "¹Ú¼ºÃ¶", "springno1", "user1@ksug.org", Level.BASIC, 1, 0);
+		this.user2 = new User("leegw700", "ÀÌ±æ¿ø", "springno2", "user2@ksug.org", Level.SILVER, 55, 10);
+		this.user3 = new User("bumjin", "¹Ú¹üÁø", "springno3", "user3@ksug.org", Level.GOLD, 100, 40);
 	}
 
 	@Test
@@ -110,6 +108,7 @@ public class UserDaoTest {
 		assertThat(user1.getId(), is(user2.getId()));
 		assertThat(user1.getName(), is(user2.getName()));
 		assertThat(user1.getPassword(), is(user2.getPassword()));
+		assertThat(user1.getEmail(), is(user2.getEmail()));
 		assertThat(user1.getLevel(), is(user2.getLevel()));
 		assertThat(user1.getLogin(), is(user2.getLogin()));
 		assertThat(user1.getRecommend(), is(user2.getRecommend()));
@@ -127,11 +126,12 @@ public class UserDaoTest {
 	public void update() {
 		dao.deleteAll();
 
-		dao.add(user1); // ìˆ˜ì •í•  ì‚¬ìš©ì
-		dao.add(user2); // ìˆ˜ì •í•˜ì§€ ì•Šì„ ì‚¬ìš©ì
+		dao.add(user1); // ¼öÁ¤ÇÒ »ç¿ëÀÚ
+		dao.add(user2); // ¼öÁ¤ÇÏÁö ¾ÊÀ» »ç¿ëÀÚ
 
-		user1.setName("ì˜¤ë¯¼ê·œ");
+		user1.setName("¿À¹Î±Ô");
 		user1.setPassword("springno6");
+		user1.setEmail("user6@ksug.org");
 		user1.setLevel(Level.GOLD);
 		user1.setLogin(1000);
 		user1.setRecommend(999);
