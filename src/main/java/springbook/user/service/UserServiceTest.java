@@ -20,9 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -44,12 +46,15 @@ public class UserServiceTest {
 	MailSender mailSender;
 	@Autowired
 	PlatformTransactionManager transactionManager;
+	@Autowired
+	ApplicationContext context;
 
 	List<User> users; // test fixture
 
 	@Before
 	public void setUp() {
-		users = Arrays.asList(new User("bumjin", "박범진", "p1", "user1@ksug.org", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0), new User("joytouch", "강명성", "p2", "user2@ksug.org", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0), new User("erwins", "신승한", "p3", "user3@ksug.org", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD - 1), new User("madnite1", "이상호", "p4", "user4@ksug.org", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD), new User("green", "오민규", "p5", "user5@ksug.org", Level.GOLD, 100, Integer.MAX_VALUE));
+		users = Arrays.asList(new User("bumjin", "�ڹ���", "p1", "user1@ksug.org", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER - 1, 0), new User("joytouch", "����", "p2", "user2@ksug.org", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0), new User("erwins", "�Ž���", "p3", "user3@ksug.org", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD - 1), new User("madnite1", "�̻�ȣ", "p4", "user4@ksug.org", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD),
+				new User("green", "���α�", "p5", "user5@ksug.org", Level.GOLD, 100, Integer.MAX_VALUE));
 	}
 
 	@Test
@@ -172,7 +177,7 @@ public class UserServiceTest {
 	public void add() {
 		userDao.deleteAll();
 
-		User userWithLevel = users.get(4); // GOLD 레벨
+		User userWithLevel = users.get(4); // GOLD ����
 		User userWithoutLevel = users.get(0);
 		userWithoutLevel.setLevel(null);
 
@@ -187,14 +192,15 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void upgradeAllOrNothing() {
+	@DirtiesContext
+	public void upgradeAllOrNothing() throws Exception {
 		TestUserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(userDao);
 		testUserService.setMailSender(mailSender);
 
-		UserServiceTx txUserService = new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(testUserService);
+		TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+		txProxyFactoryBean.setTarget(testUserService);
+		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
 		userDao.deleteAll();
 		for (User user : users)
