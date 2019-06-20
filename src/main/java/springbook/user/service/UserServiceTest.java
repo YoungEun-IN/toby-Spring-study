@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -193,12 +194,12 @@ public class UserServiceTest {
 
 	@Test
 	@DirtiesContext
-	public void upgradeAllOrNothing() throws Exception {
+	public void upgradeAllOrNothing() {
 		TestUserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(userDao);
 		testUserService.setMailSender(mailSender);
 
-		TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+		ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
 		txProxyFactoryBean.setTarget(testUserService);
 		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
@@ -215,10 +216,10 @@ public class UserServiceTest {
 		checkLevelUpgraded(users.get(1), false);
 	}
 
-	static class TestUserService extends UserServiceImpl {
+	public static class TestUserService extends UserServiceImpl {
 		private String id;
 
-		private TestUserService(String id) {
+		public TestUserService(String id) {
 			this.id = id;
 		}
 
