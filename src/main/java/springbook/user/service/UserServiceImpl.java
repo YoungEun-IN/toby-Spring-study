@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	public void setMailSender(MailSender mailSender) {
 		this.mailSender = mailSender;
 	}
-	
+
 	public void upgradeLevels() {
 		List<User> users = userDao.getAll();
 		for (User user : users) {
@@ -32,14 +32,18 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 	}
-	
+
 	private boolean canUpgradeLevel(User user) {
-		Level currentLevel = user.getLevel(); 
-		switch(currentLevel) {                                   
-		case BASIC: return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER); 
-		case SILVER: return (user.getRecommend() >= MIN_RECCOMEND_FOR_GOLD);
-		case GOLD: return false;
-		default: throw new IllegalArgumentException("Unknown Level: " + currentLevel); 
+		Level currentLevel = user.getLevel();
+		switch (currentLevel) {
+		case BASIC:
+			return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
+		case SILVER:
+			return (user.getRecommend() >= MIN_RECCOMEND_FOR_GOLD);
+		case GOLD:
+			return false;
+		default:
+			throw new IllegalArgumentException("Unknown Level: " + currentLevel);
 		}
 	}
 
@@ -48,20 +52,20 @@ public class UserServiceImpl implements UserService {
 		userDao.update(user);
 		sendUpgradeEMail(user);
 	}
-	
+
 	private void sendUpgradeEMail(User user) {
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setTo(user.getEmail());
 		mailMessage.setFrom("useradmin@ksug.org");
-		mailMessage.setSubject("Upgrade ¾È³»");
-		mailMessage.setText("»ç¿ëÀÚ´ÔÀÇ µî±ŞÀÌ " + user.getLevel().name());
-		
+		mailMessage.setSubject("Upgrade ì•ˆë‚´");
+		mailMessage.setText("ì‚¬ìš©ìë‹˜ì˜ ë“±ê¸‰ì´ " + user.getLevel().name());
+
 		this.mailSender.send(mailMessage);
 	}
-	
+
 	public void add(User user) {
-		if (user.getLevel() == null) user.setLevel(Level.BASIC);
+		if (user.getLevel() == null)
+			user.setLevel(Level.BASIC);
 		userDao.add(user);
 	}
 }
-
