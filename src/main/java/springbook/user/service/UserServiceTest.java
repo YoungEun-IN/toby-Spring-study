@@ -28,6 +28,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import springbook.user.dao.UserDao;
 import springbook.user.domain.Level;
@@ -208,6 +210,14 @@ public class UserServiceTest {
 	@Test(expected = TransientDataAccessResourceException.class)
 	public void readOnlyTransactionAttribute() {
 		testUserService.getAll();
+	}
+
+	@Test
+	@Transactional(propagation = Propagation.NEVER)
+	public void transactionSync() {
+		userService.deleteAll();
+		userService.add(users.get(0));
+		userService.add(users.get(1));
 	}
 
 	static class TestUserService extends UserServiceImpl {
