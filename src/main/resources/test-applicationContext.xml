@@ -23,6 +23,13 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
+	<!-- sql service -->
+	<bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService">
+		<property name="sqlReader" ref="sqlService" />
+		<property name="sqlRegistry" ref="sqlService" />
+		<property name="sqlmapFile" value="sqlmap.xml" />
+	</bean>
+
 	<!-- aop -->
 	<tx:annotation-driven />
 
@@ -32,10 +39,6 @@
 		<property name="sqlService" ref="sqlService" />
 	</bean>
 
-	<bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService">
-		<property name="sqlmapFile" value="sqlmap.xml" />
-	</bean>
-
 	<bean id="userService" class="springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
 		<property name="mailSender" ref="mailSender" />
@@ -43,6 +46,5 @@
 
 	<bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService" parent="userService" />
 
-	<!-- <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> <property name="host" value="mail.server.com" /> </bean> -->
 	<bean id="mailSender" class="springbook.user.service.DummyMailSender" />
 </beans>
