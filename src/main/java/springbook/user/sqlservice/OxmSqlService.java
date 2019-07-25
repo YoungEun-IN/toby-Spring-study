@@ -63,7 +63,7 @@ public class OxmSqlService implements SqlService {
 					sqlRegistry.registerSql(sql.getKey(), sql.getValue());
 				}
 			} catch (IOException e) {
-				throw new IllegalArgumentException(this.sqlmapFile + "À» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù", e);
+				throw new IllegalArgumentException(this.sqlmapFile + "ì„ ê°€ì ¸ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", e);
 			}
 		}
 	}
