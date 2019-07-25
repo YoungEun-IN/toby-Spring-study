@@ -23,11 +23,9 @@
 	</bean>
 
 	<!-- sql service -->
-	<!-- <bean id="sqlService" class="springbook.user.sqlservice.BaseSqlService"> <property name="sqlReader" ref="sqlReader" /> <property name="sqlRegistry" ref="sqlRegistry" /> </bean> <bean id="sqlReader" class="springbook.user.sqlservice.JaxbXmlSqlReader"> <property name="sqlmapFile" value="sqlmap.xml" /> </bean> <bean id="sqlRegistry" class="springbook.user.sqlservice.HashMapSqlRegistry"> </bean> -->
-
-	<!-- sql service -->
 	<bean id="sqlService" class="springbook.user.sqlservice.OxmSqlService">
 		<property name="unmarshaller" ref="unmarshaller" />
+		<property name="sqlmap" value="classpath:/springbook/user/dao/sqlmap.xml" />
 	</bean>
 
 	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
